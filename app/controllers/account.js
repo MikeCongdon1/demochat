@@ -44,7 +44,7 @@ module.exports = function() {
         });
     });
 
-    app.get('/logout', function(req, res ) {
+    app.get('/logout', function(req, res) {
         req.session.destroy();
         res.redirect('/login');
     });
@@ -92,7 +92,7 @@ module.exports = function() {
                     lastName: form.lastName || form['last-name']
                 };
 
-            core.account.update(req.user._id, data, function (err, user) {
+            core.account.update(req.user._id, data, function(err, user) {
                 if (err) {
                     return res.json({
                         status: 'error',
@@ -113,7 +113,7 @@ module.exports = function() {
                 return res.status(403).json({
                     status: 'error',
                     message: 'Cannot change account settings ' +
-                             'when using token authentication.'
+                        'when using token authentication.'
                 });
             }
 
@@ -129,45 +129,46 @@ module.exports = function() {
                 };
 
             auth.authenticate(req, req.user.uid || req.user.username,
-                              data.currentPassword, function(err, user) {
-                if (err) {
-                    return res.status(400).json({
-                        status: 'error',
-                        message: 'There were problems authenticating you.',
-                        errors: err
-                    });
-                }
-
-                if (!user) {
-                    return res.status(401).json({
-                        status: 'error',
-                        message: 'Incorrect login credentials.'
-                    });
-                }
-
-                core.account.update(req.user._id, data, function (err, user, reason) {
-                    if (err || !user) {
+                data.currentPassword,
+                function(err, user) {
+                    if (err) {
                         return res.status(400).json({
                             status: 'error',
-                            message: 'Unable to update your account.',
-                            reason: reason,
+                            message: 'There were problems authenticating you.',
                             errors: err
                         });
                     }
-                    res.json(user);
+
+                    if (!user) {
+                        return res.status(401).json({
+                            status: 'error',
+                            message: 'Incorrect login credentials.'
+                        });
+                    }
+
+                    core.account.update(req.user._id, data, function(err, user, reason) {
+                        if (err || !user) {
+                            return res.status(400).json({
+                                status: 'error',
+                                message: 'Unable to update your account.',
+                                reason: reason,
+                                errors: err
+                            });
+                        }
+                        res.json(user);
+                    });
                 });
-            });
         },
         generate_token: function(req, res) {
             if (req.user.usingToken) {
                 return res.status(403).json({
                     status: 'error',
                     message: 'Cannot generate a new token ' +
-                             'when using token authentication.'
+                        'when using token authentication.'
                 });
             }
 
-            core.account.generateToken(req.user._id, function (err, token) {
+            core.account.generateToken(req.user._id, function(err, token) {
                 if (err) {
                     return res.json({
                         status: 'error',
@@ -188,11 +189,11 @@ module.exports = function() {
                 return res.status(403).json({
                     status: 'error',
                     message: 'Cannot revoke token ' +
-                             'when using token authentication.'
+                        'when using token authentication.'
                 });
             }
 
-            core.account.revokeToken(req.user._id, function (err) {
+            core.account.revokeToken(req.user._id, function(err) {
                 if (err) {
                     return res.json({
                         status: 'error',
@@ -253,7 +254,7 @@ module.exports = function() {
                         message = _.map(err.errors, function(error) {
                             return error.message;
                         }).join(' ');
-                    // If all else fails...
+                        // If all else fails...
                     } else {
                         console.error(err);
                     }
@@ -267,7 +268,7 @@ module.exports = function() {
                 res.status(201).json({
                     status: 'success',
                     message: 'You\'ve been registered, ' +
-                             'please try logging in now!'
+                        'please try logging in now!'
                 });
             });
         },
@@ -292,7 +293,7 @@ module.exports = function() {
                     return res.status(401).json({
                         status: 'error',
                         message: info && info.message ||
-                                 'Incorrect login credentials.'
+                            'Incorrect login credentials.'
                     });
                 }
 
